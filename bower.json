@@ -1,0 +1,19 @@
+{
+  "name": "GameController",
+  "version": "0.0.1",
+  "homepage": "https://github.com/evanxd/game-controller",
+  "authors": [
+    "Evan Xd <itoyxd@gmail.com>"
+  ],
+  "description": "A Web Component for game controller.",
+  "main": "game-controller.html",
+  "keywords": [
+    "web-component",
+    "game-controller",
+    "gamepad"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "polymer-platform": "0.3.5"
+  }
+}

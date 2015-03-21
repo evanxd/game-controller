@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>NES Gamepad</title>
+  <script src="bower_components/polymer-platform/platform.js"></script>
+  <link rel="import" href="game-controller.html">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <game-controller id="gameController"></game-controller>
+  <script>
+    (function() {
+      'use strict';
+      var keyCodes = {
+        up: GameController.input.KEY_UP,
+        left: GameController.input.KEY_LEFT,
+        right: GameController.input.KEY_RIGHT,
+        down: GameController.input.KEY_DOWN,
+        a: GameController.input.KEY_F,
+        b: GameController.input.KEY_D,
+        start: GameController.input.KEY_ENTER,
+        select: GameController.input.KEY_S
+      };
+      var client = new WebSocket('ws://host:port/', 'web-io');
+      client.addEventListener('open', function () {
+        var gameController = document.querySelector('#gameController');
+        gameController.addEventListener('buttontouch', function(evt) {
+          client.send('{ "keyCode":' + keyCodes[evt.detail.button] +
+            ' , "action": ' + evt.detail.action + '}');
+        });
+      });
+    }());
+  </script>
+</body>
+</html>
