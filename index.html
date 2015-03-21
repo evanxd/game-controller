@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="mobile-web-app-capable" content="yes">
   <title>NES Gamepad</title>
-  <script src="bower_components/polymer-platform/platform.js"></script>
+  <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
   <link rel="import" href="game-controller.html">
   <style>
     body {
@@ -30,7 +30,7 @@
         start: GameController.input.KEY_ENTER,
         select: GameController.input.KEY_S
       };
-      var client = new WebSocket('ws://host:port/', 'web-io');
+      var client = new WebSocket('ws://192.168.1.15:8080/', 'web-io');
       client.addEventListener('open', function () {
         var gameController = document.querySelector('#gameController');
         gameController.addEventListener('buttontouch', function(evt) {

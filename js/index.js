@@ -95,7 +95,7 @@
     }
   };
 
-  document.register('game-controller', {
+  document.registerElement('game-controller', {
     prototype: GameController.prototype
   });
   window.GameController = GameController;
