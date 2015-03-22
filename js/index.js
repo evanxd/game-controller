@@ -22,13 +22,8 @@
     var gamepadTemplate = gamepadDocument.querySelector('#gameController').content;
     gamepad.appendChild(document.importNode(gamepadTemplate, true));
     this.canvas = gamepad.querySelector('canvas');
+    this._registerEvents();
     this._draw();
-
-    this.addEventListener('serverconnected', this);
-    this.canvas.addEventListener('mousedown', this);
-    this.canvas.addEventListener('mouseup', this);
-    this.canvas.addEventListener('touchstart', this);
-    this.canvas.addEventListener('touchsend', this);
   };
 
   GameController.prototype.handleEvent = function(evt) {
@@ -37,40 +32,37 @@
   };
 
   GameController.prototype._handle_mousedown = function(evt) {
-    this._handle_touchstart({ changedTouches: [evt] });
+    this._sendButtonTouchEvent(evt.clientX, evt.clientY, true);
   };
 
   GameController.prototype._handle_mouseup = function(evt) {
-    this._handle_touchend({ changedTouches: [evt] });
+    this._sendButtonTouchEvent(evt.clientX, evt.clientY, false);
   };
 
   GameController.prototype._handle_touchstart = function(evt) {
     var x = evt.changedTouches[0].clientX;
     var y = evt.changedTouches[0].clientY;
-    var button = this.getTouchedButton(x, y);
-    if (button) {
-      var event = new CustomEvent('buttontouch', { detail: {
-        button: button,
-        action: 1,
-      }});
-      this.dispatchEvent(event);
-    }
+    this._sendButtonTouchEvent(x, y, true);
   };
 
   GameController.prototype._handle_touchend = function(evt) {
     var x = evt.changedTouches[0].clientX;
     var y = evt.changedTouches[0].clientY;
-    var button = this.getTouchedButton(x, y);
+    this._sendButtonTouchEvent(x, y, false);
+  };
+
+  GameController.prototype._sendButtonTouchEvent = function(x, y, touched) {
+    var button = this._getTouchedButton(x, y);
     if (button) {
       var event = new CustomEvent('buttontouch', { detail: {
         button: button,
-        action: 0,
+        action: touched ? 1 : 0,
       }});
       this.dispatchEvent(event);
     }
   };
 
-  GameController.prototype.getTouchedButton = function(x, y) {
+  GameController.prototype._getTouchedButton = function(x, y) {
     var buttonName;
     this.config.buttons.forEach(function(button) {
       if (Math.pow(button.x - x, 2) +
@@ -79,6 +71,16 @@
       }
     });
     return buttonName;
+  };
+
+  GameController.prototype._registerEvents = function() {
+    if ('ontouchstart' in window) {
+      this.canvas.addEventListener('touchstart', this);
+      this.canvas.addEventListener('touchend', this);      
+    } else {
+      this.canvas.addEventListener('mousedown', this);
+      this.canvas.addEventListener('mouseup', this);
+    }
   };
 
   GameController.prototype._draw = function() {
